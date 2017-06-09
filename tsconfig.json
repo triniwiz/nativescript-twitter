@@ -6,10 +6,24 @@
         "emitDecoratorMetadata": true,
         "noEmitHelpers": true,
         "noEmitOnError": false,
-        "declaration": true
+        "declaration": true,
+        "lib": [
+            "es6",
+            "dom"
+        ],
+        "skipLibCheck": true,
+        "rootDir": ".",
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "./node_modules/tns-core-modules/*",
+                "./node_modules/*"
+            ]
+        }
     },
     "exclude": [
         "demo",
+        "demo-ng",
         "node_modules",
         "platforms",
         "**/*.aot.ts"

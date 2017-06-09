@@ -6,9 +6,16 @@
         "emitDecoratorMetadata": true,
         "noEmitHelpers": true,
         "noEmitOnError": false,
-        "lib": [
-            "es2015.iterable"
-        ]
+        "lib": ["es6", "dom"],
+        "skipLibCheck": true,
+        "rootDir": ".",
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+            "./node_modules/tns-core-modules/*",
+            "./node_modules/*"
+            ]
+        }
     },
     "exclude": [
         "node_modules",

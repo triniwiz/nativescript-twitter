@@ -1,19 +1,31 @@
 {
   "name": "nativescript-twitter",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "NativeScript Twitter Kit for Android & IOS",
   "main": "twitter",
   "nativescript": {
     "platforms": {
-      "ios": "1.6.0",
-      "android": "1.6.0"
+      "ios": "3.0.0",
+      "android": "3.0.0"
     }
   },
   "scripts": {},
-  "author": "Osei Fortune <fortune.osei@yahoo.com>",
+  "author": {
+    "name": "Osei Fortune",
+    "email": "fortune.osei@yahoo.com",
+    "url": "https://github.com/triniwiz"
+  },
   "license": "MIT",
   "devDependencies": {
-    "tns-core-modules": "~2.5.0",
-    "tns-platform-declarations": "^2.5.0"
-  }
+    "tns-core-modules": "^3.0.0",
+    "tns-platform-declarations": "^3.0.0"
+  },
+  "peerDependencies": {
+    "tns-core-modules": "3.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/triniwiz/nativescript-twitter/issues"
+  },
+  "homepage": "https://github.com/triniwiz/nativescript-twitter",
+  "readmeFilename": "README.md"
 }

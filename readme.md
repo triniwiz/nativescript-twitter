@@ -2,6 +2,11 @@
 
 NativeScript implementation of Twitter SDK (Some Features)
 
+#### NS 3.0+
+`tns plugin add nativescript-twitter`
+
+#### NS < 3.0
+`npm install nativescript-twitter@"^1.x"`
 
 ## Example Implementation
 

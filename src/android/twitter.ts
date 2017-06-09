@@ -1,7 +1,7 @@
 import * as utils from "utils/utils";
 import * as app from "application";
 import { View } from "ui/core/view";
-import { Observable } from "data/observable";
+import { fromObject } from "data/observable";
 import * as http from "http";
 declare const com: any, java;
 export class TNSTwitter {
@@ -72,28 +72,28 @@ export class TNSTwitterButton extends View {
     get android() {
         return this._android;
     }
-    get _nativeView() {
+    public createNativeView() {
+        this._android = new com.twitter.sdk.android.core.identity.TwitterLoginButton(app.android.foregroundActivity);
         return this._android;
     }
-    public _createUI() {
+    public initNativeView() {
         const that = new WeakRef(this);
-        this._android = new com.twitter.sdk.android.core.identity.TwitterLoginButton(app.android.foregroundActivity);
         const _cb = com.twitter.sdk.android.core.Callback.extend({
+            owner: that.get(),
             success(result) {
-                that.get().notify({
+                this.owner.notify({
                     eventName: 'loginStatus',
-                    object: new Observable({ value: 'success', userName: result.data.getUserName(), userID: result.data.getUserId() })
+                    object: fromObject({ value: 'success', userName: result.data.getUserName(), userID: result.data.getUserId() })
                 });
             },
             failure(exception) {
-                that.get().notify({
+                this.owner.notify({
                     eventName: 'loginStatus',
-                    object: new Observable({ value: 'failed', message: exception.getMessage() })
+                    object: fromObject({ value: 'failed', message: exception.getMessage() })
                 });
             }
         });
         this._android.setCallback(new _cb());
-
         app.android.on(app.AndroidApplication.activityResultEvent, (args: app.AndroidActivityResultEventData) => {
             this._android.onActivityResult(args.requestCode, args.resultCode, args.intent);
         })

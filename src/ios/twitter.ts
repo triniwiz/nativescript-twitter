@@ -1,5 +1,5 @@
-import { View } from "ui/core/view";
-import { Observable } from "data/observable";
+import { View , layout} from "ui/core/view";
+import { fromObject } from "data/observable";
 import * as http from "http";
 import * as types from "utils/types";
 import * as utils from "utils/utils";
@@ -50,29 +50,26 @@ export class TNSTwitterButton extends View {
     get ios() {
         return this._ios;
     }
-    get _nativeView() {
-        return this._ios;
-    }
-    constructor() {
-        super();
+    public createNativeView() {
         this._ios = TWTRLogInButton.buttonWithLogInCompletion((session, error) => {
             if (error) {
                 this.notify({
                     eventName: 'loginStatus',
-                    object: new Observable({ value: 'failed' })
+                    object: fromObject({ value: 'failed' })
                 });
             } else {
                 this.notify({
                     eventName: 'loginStatus',
-                    object: new Observable({ value: 'success', userName: session.userName, userID: session.userID })
+                    object: fromObject({ value: 'success', userName: session.userName, userID: session.userID })
                 });
             }
         });
+        return this._ios;
     }
     public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number) {
-            const width = utils.layout.getMeasureSpecSize(widthMeasureSpec);
-            const height = utils.layout.getMeasureSpecSize(heightMeasureSpec);
-            this.setMeasuredDimension(width, height);
+        const width = layout.getMeasureSpecSize(widthMeasureSpec);
+        const height = layout.getMeasureSpecSize(heightMeasureSpec);
+        this.setMeasuredDimension(width, height);
     }
 }
 
