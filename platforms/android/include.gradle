@@ -1,0 +1,15 @@
+android{
+    productFlavors{
+        "nativescripttwitter"{
+            dimension "nativescripttwitter"
+        }
+    }
+}
+
+repositories {
+  jcenter()
+}
+
+dependencies {
+  compile 'com.twitter.sdk.android:twitter-core:3.0.0'
+}

@@ -1,0 +1,11 @@
+demo/
+demo-ng/
+*.png
+*.log
+*.map
+*.ts
+!.d.ts
+!src/android/*
+!src/ios/*
+.idea
+.vscode

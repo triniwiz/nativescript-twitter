@@ -1,0 +1,19 @@
+{
+  "name": "nativescript-twitter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "twitter",
+  "nativescript": {
+    "platforms": {
+      "ios": "1.6.0",
+      "android": "1.6.0"
+    }
+  },
+  "scripts": {},
+  "author": "Osei Fortune <fortune.osei@yahoo.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "tns-core-modules": "~2.5.0",
+    "tns-platform-declarations": "^2.5.0"
+  }
+}
