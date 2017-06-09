@@ -2,6 +2,9 @@
 
 NativeScript implementation of Twitter SDK (Some Features)
 
+[![npm](https://img.shields.io/npm/v/nativescript-twitter.svg)](https://www.npmjs.com/package/nativescript-twitter)
+[![npm](https://img.shields.io/npm/dt/nativescript-twitter.svg?label=npm%20downloads)](https://www.npmjs.com/package/nativescript-twitter)
+
 #### NS 3.0+
 `tns plugin add nativescript-twitter`
 
