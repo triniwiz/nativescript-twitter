@@ -1,7 +1,7 @@
 {
   "name": "nativescript-twitter",
   "version": "1.0.0",
-  "description": "",
+  "description": "NativeScript Twitter Kit for Android & IOS",
   "main": "twitter",
   "nativescript": {
     "platforms": {
