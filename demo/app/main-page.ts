@@ -4,11 +4,11 @@ a code-behind file. The code-behind is a great place to place your view
 logic, and to set up your page’s data binding.
 */
 
-import { EventData } from 'data/observable';
-import { Page } from 'ui/page';
+import { EventData } from 'tns-core-modules/data/observable';
+import { Page } from 'tns-core-modules/ui/page';
 import { HelloWorldModel } from './main-view-model';
 import { TNSTwitter, CustomApiService } from "nativescript-twitter";
-import * as app from "application";
+import * as app from "tns-core-modules/application";
 // Event handler for Page "navigatingTo" event attached in main-page.xml
 export function navigatingTo(args: EventData) {
     /*
@@ -36,9 +36,9 @@ export function navigatingTo(args: EventData) {
         } else {
             TNSTwitter.getCurrentUser(args.object.get("userID")).then(
                 (user) => {
-                    console.dump(user)
+                    console.log(user)
                 }, err => {
-                    console.dump(err)
+                    console.log(err)
                 })
         }
 

@@ -5,8 +5,8 @@ purpose of the file is to pass control to the app’s first module.
 */
 
 import "./bundle-config";
-import * as app from 'application';
-import * as utils from "utils/utils";
+import * as app from 'tns-core-modules/application';
+import * as utils from "tns-core-modules/utils/utils";
 if (app.android) {
     const TNSTwitter = require("nativescript-twitter").TNSTwitter;
     TNSTwitter.init("nMOzsRotT4uil8j2Y1hRmFzG6", "DPhkK4lZiwC4hcByiczxswBAorwoUgJrCjpxwBIo3JX8BXNcKz");

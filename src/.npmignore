@@ -1,0 +1,13 @@
+demo/
+demo-ng/
+*.png
+*.log
+*.map
+*.ts
+*.d.ts
+.idea
+.vscode
+typings
+!index.d.ts
+tsconfig.json
+package-lock.json

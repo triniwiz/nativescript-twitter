@@ -1,8 +1,8 @@
-import * as utils from "utils/utils";
-import * as app from "application";
-import { View } from "ui/core/view";
-import { fromObject } from "data/observable";
-import * as http from "http";
+import * as utils from "tns-core-modules/utils/utils";
+import * as app from "tns-core-modules/application";
+import { View } from "tns-core-modules/ui/core/view";
+import { fromObject } from "tns-core-modules/data/observable";
+import * as http from "tns-core-modules/http";
 declare const com: any, java;
 export class TNSTwitter {
     public static init(key: string, secret: string) {
@@ -32,7 +32,7 @@ export class TNSTwitter {
         });
     }
 
-    public static getCurrentUser(userID: string): Promise<any> {
+    public static getCurrentUser(userID: string, token?: string, tokenSecret?: string): Promise<any> {
         return new Promise((resolve, reject) => {
             const api = new CustomApiService();
             api.makeRequest("https://api.twitter.com/1.1/account/verify_credentials.json", "get")
@@ -49,13 +49,21 @@ export class TNSTwitter {
                         profileImageURL: user.profile_image_url_https,
                         profileURL: user.url,
                         screenName: user.screen_name,
-                        userID: user.id
+                        userID: user.id,
+                        token,
+                        tokenSecret
                     })
                 }, err => {
                     reject(err.message);
                 });
 
         });
+    }
+
+    public static logIn(controller: any): Promise<any> {
+      return new Promise((resolve, reject) => {
+        reject('TODO for Android!!');
+      });
     }
 
     public static getNativeConfig() {
