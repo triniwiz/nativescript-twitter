@@ -7,8 +7,9 @@
         "noEmitHelpers": true,
         "noEmitOnError": false,
         "lib": [
-            "es6",
-            "dom"
+            "es2017",
+            "dom",
+            "es6"
         ],
         "skipLibCheck": true,
         "rootDir": ".",
@@ -17,6 +18,9 @@
             "*": [
                 "./node_modules/tns-core-modules/*",
                 "./node_modules/*"
+            ],
+            "~/*": [
+                "app/*"
             ]
         }
     },

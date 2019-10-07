@@ -1,8 +1,8 @@
-import { View , layout} from "ui/core/view";
-import { fromObject } from "data/observable";
-import * as http from "http";
-import * as types from "utils/types";
-import * as utils from "utils/utils";
+import { View , layout} from "tns-core-modules/ui/core/view";
+import { fromObject } from "tns-core-modules/data/observable";
+import * as http from "tns-core-modules/http";
+import * as types from "tns-core-modules/utils/types";
+import * as utils from "tns-core-modules/utils/utils";
 declare const NSJSONSerialization;
 export class TNSTwitter {
     public static init(key: string, secret: string) {
@@ -19,7 +19,7 @@ export class TNSTwitter {
             });
         });
     }
-    public static getCurrentUser(userID: string): Promise<any> {
+    public static getCurrentUser(userID: string, token?: string, tokenSecret?: string): Promise<any> {
         return new Promise((resolve, reject) => {
             const client = TWTRAPIClient.clientWithCurrentUser();
             client.loadUserWithIDCompletion(userID, (user: TWTRUser, error) => {
@@ -36,13 +36,28 @@ export class TNSTwitter {
                         profileImageURL: user.profileImageURL,
                         profileURL: user.profileURL,
                         screenName: user.screenName,
-                        userID: user.userID
+                        userID: user.userID,
+                        token,
+                        tokenSecret
                     })
                 }
             });
         });
     }
+    public static logIn(controller: any): Promise<any> {
+      return new Promise((resolve, reject) => {
+        TWTRTwitter.sharedInstance().logInWithViewControllerCompletion(controller, (session, error) => {
+          if (error) {
+            reject({ message: error.localizedDescription });
+          } else {
+            TNSTwitter.getCurrentUser(session.userID, session.authToken, session.authTokenSecret).then(user => {
+              resolve(user);
+            });
+          }
 
+        });
+      });
+    }
 }
 
 export class TNSTwitterButton extends View {
@@ -77,8 +92,8 @@ export class CustomApiService {
     private _config;
     private _token;
     constructor() {
-        this._config = utils.ios.getter(Twitter, Twitter.sharedInstance).authConfig;
-        this._token = utils.ios.getter(Twitter, Twitter.sharedInstance).sessionStore.session();
+        this._config = utils.ios.getter(TWTRTwitter, TWTRTwitter.sharedInstance).authConfig;
+        this._token = utils.ios.getter(TWTRTwitter, TWTRTwitter.sharedInstance).sessionStore.session();
     }
     makeRequest(url, method, options?): Promise<any> {
         return new Promise((resolve, reject) => {

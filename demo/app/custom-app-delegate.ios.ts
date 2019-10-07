@@ -1,12 +1,12 @@
-import * as utils from "utils/utils";
-declare const UIResponder, UIApplicationDelegate, Twitter;
+import * as utils from "tns-core-modules/utils/utils";
+
 export class CustomAppDelegate extends UIResponder implements UIApplicationDelegate {
     public static ObjCProtocols = [UIApplicationDelegate];
     applicationDidFinishLaunchingWithOptions(application, launchOptions) {
-        utils.ios.getter(Twitter,Twitter.sharedInstance).startWithConsumerKeyConsumerSecret("nMOzsRotT4uil8j2Y1hRmFzG6", "DPhkK4lZiwC4hcByiczxswBAorwoUgJrCjpxwBIo3JX8BXNcKz");
+        TWTRTwitter.sharedInstance().startWithConsumerKeyConsumerSecret("8YwpqLe7sWfbJG5ymDxZNtgN4", "Uwxd1q4UFJp2IjINsUcVYMpmQWy5DR2ZSiE6Y6dji96WpDYOuA");
         return true;
     }
     applicationOpenURLOptions(application, url, options) {
-        return utils.ios.getter(Twitter,Twitter.sharedInstance).applicationOpenURLOptions(application, url, options);
+        return TWTRTwitter.sharedInstance().applicationOpenURLOptions(application, url, options);
     }
 }

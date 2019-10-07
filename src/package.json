@@ -3,13 +3,16 @@
   "version": "2.0.0",
   "description": "NativeScript Twitter Kit for Android & IOS",
   "main": "twitter",
+  "typings": "index.d.ts",
   "nativescript": {
     "platforms": {
       "ios": "3.0.0",
       "android": "3.0.0"
     }
   },
-  "scripts": {},
+  "scripts": {
+    "tsc": "tsc"
+  },
   "author": {
     "name": "Osei Fortune",
     "email": "fortune.osei@yahoo.com",
@@ -17,11 +20,9 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "tns-core-modules": "^3.0.0",
-    "tns-platform-declarations": "^3.0.0"
-  },
-  "peerDependencies": {
-    "tns-core-modules": "3.0.0"
+    "tns-core-modules": "^5.2.0",
+    "tns-platform-declarations": "^5.2.0",
+    "typescript": "~3.1.6"
   },
   "bugs": {
     "url": "https://github.com/triniwiz/nativescript-twitter/issues"
