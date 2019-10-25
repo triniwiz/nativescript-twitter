@@ -1,4 +1,4 @@
-import * as utils from "tns-core-modules/utils/utils";
+declare var TWTRTwitter;
 
 export class CustomAppDelegate extends UIResponder implements UIApplicationDelegate {
     public static ObjCProtocols = [UIApplicationDelegate];

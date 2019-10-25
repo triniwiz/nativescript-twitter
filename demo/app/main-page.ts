@@ -7,8 +7,8 @@ logic, and to set up your page’s data binding.
 import { EventData } from 'tns-core-modules/data/observable';
 import { Page } from 'tns-core-modules/ui/page';
 import { HelloWorldModel } from './main-view-model';
-import { TNSTwitter, CustomApiService } from "nativescript-twitter";
-import * as app from "tns-core-modules/application";
+import { TNSTwitter } from 'nativescript-twitter';
+
 // Event handler for Page "navigatingTo" event attached in main-page.xml
 export function navigatingTo(args: EventData) {
     /*
@@ -31,10 +31,10 @@ export function navigatingTo(args: EventData) {
     page.bindingContext = new HelloWorldModel();
 
     page.getViewById('twitter').on('loginStatus', (args) => {
-        if (args.object.get("value") === 'failed') {
-            console.log(args.object.get("message"))
+        if (args.object.get('value') === 'failed') {
+            console.log(args.object.get('message'))
         } else {
-            TNSTwitter.getCurrentUser(args.object.get("userID")).then(
+            TNSTwitter.getCurrentUser(args.object.get('userID')).then(
                 (user) => {
                     console.log(user)
                 }, err => {
@@ -44,4 +44,13 @@ export function navigatingTo(args: EventData) {
 
     });
 
+}
+
+export async function login(args) {
+    try {
+        const user = await TNSTwitter.logIn(null);
+        console.dir(user);
+    }catch (e) {
+        console.error('error', e);
+    }
 }

@@ -4,7 +4,8 @@ of which NativeScript renders with a platform-specific iOS or Android native con
 You can find a full list of user interface components you can use in your app at
 https://docs.nativescript.org/ui/components.
 -->
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" class="page" xmlns:twitter="nativescript-twitter">
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" class="page"
+      xmlns:twitter="nativescript-twitter">
     <!--
     The ActionBar is the NativeScript common abstraction over the Android ActionBar and iOS NavigationBar.
     http://docs.nativescript.org/ui/action-bar
@@ -24,7 +25,10 @@ https://docs.nativescript.org/ui/components.
     core theme, such as p-20, btn, h2, and text-center. You can view a full list of the
     class names available for styling your app at https://docs.nativescript.org/ui/theme.
     -->
- 
- 
-    <twitter:TNSTwitterButton id="twitter"/>
+
+
+    <GridLayout rows="auto,auto" margin="0 40">
+        <twitter:TNSTwitterButton height="40" row="0" id="twitter"/>
+        <Button row="1" tap="login" text="Twitter Login"/>
+    </GridLayout>
 </Page>
