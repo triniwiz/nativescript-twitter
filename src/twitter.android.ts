@@ -1,9 +1,10 @@
-import * as utils from "tns-core-modules/utils/utils";
-import * as app from "tns-core-modules/application";
-import { View } from "tns-core-modules/ui/core/view";
-import { fromObject } from "tns-core-modules/data/observable";
-import * as http from "tns-core-modules/http";
-declare const com: any, java;
+import * as utils from 'tns-core-modules/utils/utils';
+import * as app from 'tns-core-modules/application';
+import { View } from 'tns-core-modules/ui/core/view';
+import { fromObject } from 'tns-core-modules/data/observable';
+import * as http from 'tns-core-modules/http';
+
+//declare const com: any, java;
 export class TNSTwitter {
     public static init(key: string, secret: string) {
         const config = new com.twitter.sdk.android.core.TwitterConfig.Builder(utils.ad.getApplicationContext())
@@ -16,54 +17,83 @@ export class TNSTwitter {
         return new Promise((resolve, reject) => {
             const session = com.twitter.sdk.android.core.TwitterCore.getInstance().getSessionManager().getActiveSession();
             const client = new com.twitter.sdk.android.core.identity.TwitterAuthClient();
-            client.requestEmail(session, new com.twitter.sdk.android.core.Callback(
+            const cb = (com as any).twitter.sdk.android.core.Callback.extend(
                 {
                     success(result) {
                         if (result.data && result.data.length > 0) {
                             resolve(result.data);
                         } else {
-                            reject({ "message": "This user does not have an email address." })
+                            reject({'message': 'This user does not have an email address.'})
                         }
                     }, failure(exception) {
-                        reject({ message: exception.getMessage() })
+                        reject({message: exception.getMessage()})
                     }
                 }
-            ));
+            );
+            client.requestEmail(session, new cb());
         });
     }
 
     public static getCurrentUser(userID: string, token?: string, tokenSecret?: string): Promise<any> {
         return new Promise((resolve, reject) => {
             const api = new CustomApiService();
-            api.makeRequest("https://api.twitter.com/1.1/account/verify_credentials.json", "get")
+            api.makeRequest('https://api.twitter.com/1.1/account/verify_credentials.json', 'get')
                 .then(
-                data => {
-                    const user = data.content.toJSON();;
-                    resolve({
-                        formattedScreenName: user.screen_name,
-                        isProtected: user.protected,
-                        isVerified: user.verified,
-                        name: user.name,
-                        profileImageLargeURL: user.profile_image_url_https.replace('_normal', '_bigger'),
-                        profileImageMiniURL: user.profile_image_url_https.replace('_normal', '_mini'),
-                        profileImageURL: user.profile_image_url_https,
-                        profileURL: user.url,
-                        screenName: user.screen_name,
-                        userID: user.id,
-                        token,
-                        tokenSecret
-                    })
-                }, err => {
-                    reject(err.message);
-                });
+                    data => {
+                        const user = data.content.toJSON();
+                        resolve({
+                            formattedScreenName: user.screen_name,
+                            isProtected: user.protected,
+                            isVerified: user.verified,
+                            name: user.name,
+                            profileImageLargeURL: user.profile_image_url_https.replace('_normal', '_bigger'),
+                            profileImageMiniURL: user.profile_image_url_https.replace('_normal', '_mini'),
+                            profileImageURL: user.profile_image_url_https,
+                            profileURL: user.url,
+                            screenName: user.screen_name,
+                            userID: user.id,
+                            token,
+                            tokenSecret
+                        })
+                    }, err => {
+                        reject({message: err.message});
+                    });
 
         });
     }
 
     public static logIn(controller: any): Promise<any> {
-      return new Promise((resolve, reject) => {
-        reject('TODO for Android!!');
-      });
+        return new Promise((resolve, reject) => {
+            const activity = app.android.startActivity || app.android.foregroundActivity;
+            const client = new com.twitter.sdk.android.core.identity.TwitterAuthClient();
+            const cb = (com as any).twitter.sdk.android.core.Callback.extend({
+                success(result: com.twitter.sdk.android.core.Result<any>) {
+                    const data = result.data;
+                    const auth = result.data.getAuthToken();
+                    TNSTwitter.getCurrentUser(data.getUserId(), auth.token, auth.secret)
+                        .then(user => {
+                            resolve(user);
+                        }).catch(error => {
+                        reject(error);
+                    })
+                },
+                failure(exception) {
+                    reject({
+                        message: exception.getMessage()
+                    })
+                }
+            });
+
+            client.authorize(activity, new cb);
+            const callback = function (args: app.AndroidActivityResultEventData) {
+                if (args.requestCode === client.getRequestCode()) {
+                    client.onActivityResult(args.requestCode, args.resultCode, args.intent);
+                    app.android.off(app.AndroidApplication.activityResultEvent, callback);
+                }
+            };
+            app.android.on(app.AndroidApplication.activityResultEvent, callback);
+
+        });
     }
 
     public static getNativeConfig() {
@@ -76,34 +106,43 @@ export class TNSTwitter {
 }
 
 export class TNSTwitterButton extends View {
-    private _android;
     get android() {
-        return this._android;
+        return this.nativeView;
     }
+
     public createNativeView() {
-        this._android = new com.twitter.sdk.android.core.identity.TwitterLoginButton(app.android.foregroundActivity);
-        return this._android;
+        return new com.twitter.sdk.android.core.identity.TwitterLoginButton(this._context)
     }
+
     public initNativeView() {
-        const that = new WeakRef(this);
-        const _cb = com.twitter.sdk.android.core.Callback.extend({
-            owner: that.get(),
+        const that = new WeakRef<TNSTwitterButton>(this);
+        const _cb = (com as any).twitter.sdk.android.core.Callback.extend({
             success(result) {
-                this.owner.notify({
-                    eventName: 'loginStatus',
-                    object: fromObject({ value: 'success', userName: result.data.getUserName(), userID: result.data.getUserId() })
-                });
+                const owner = that.get();
+                if (owner) {
+                    owner.notify({
+                        eventName: 'loginStatus',
+                        object: fromObject({
+                            value: 'success',
+                            userName: result.data.getUserName(),
+                            userID: result.data.getUserId()
+                        })
+                    });
+                }
             },
             failure(exception) {
-                this.owner.notify({
-                    eventName: 'loginStatus',
-                    object: fromObject({ value: 'failed', message: exception.getMessage() })
-                });
+                const owner = that.get();
+                if (owner) {
+                    owner.notify({
+                        eventName: 'loginStatus',
+                        object: fromObject({value: 'failed', message: exception.getMessage()})
+                    });
+                }
             }
         });
-        this._android.setCallback(new _cb());
+        this.nativeView.setCallback(new _cb());
         app.android.on(app.AndroidApplication.activityResultEvent, (args: app.AndroidActivityResultEventData) => {
-            this._android.onActivityResult(args.requestCode, args.resultCode, args.intent);
+            this.nativeView.onActivityResult(args.requestCode, args.resultCode, args.intent);
         })
     }
 
@@ -112,10 +151,12 @@ export class TNSTwitterButton extends View {
 export class CustomApiService {
     private _config;
     private _token;
+
     constructor() {
         this._config = TNSTwitter.getNativeConfig();
         this._token = TNSTwitter.getNativeToken();
     }
+
     makeRequest(url, method, options?): Promise<any> {
         if (this._config && this._token) {
             try {
@@ -150,7 +191,7 @@ export class CustomApiService {
                     store.put(item, value[item]);
                     break;
                 case 'boolean':
-                    store.put(item, new java.lang.String(String(value[item])));
+                    store.put(item, `${value[item]}`);
                     break;
                 case 'number':
                     store.put(item, value[item]);

@@ -1,30 +1,32 @@
-import { View , layout} from "tns-core-modules/ui/core/view";
-import { fromObject } from "tns-core-modules/data/observable";
-import * as http from "tns-core-modules/http";
-import * as types from "tns-core-modules/utils/types";
-import * as utils from "tns-core-modules/utils/utils";
+import { View } from 'tns-core-modules/ui/core/view';
+import { fromObject } from 'tns-core-modules/data/observable';
+import * as types from 'tns-core-modules/utils/types';
+
 declare const NSJSONSerialization;
+
 export class TNSTwitter {
     public static init(key: string, secret: string) {
     }
+
     public static getCurrentUserEmail(): Promise<any> {
         return new Promise((resolve, reject) => {
             const client = TWTRAPIClient.clientWithCurrentUser();
             client.requestEmailForCurrentUser((email: string, error) => {
                 if (error) {
-                    reject({ message: error.localizedDescription });
+                    reject({message: error.localizedDescription});
                 } else {
                     resolve(email);
                 }
             });
         });
     }
+
     public static getCurrentUser(userID: string, token?: string, tokenSecret?: string): Promise<any> {
         return new Promise((resolve, reject) => {
             const client = TWTRAPIClient.clientWithCurrentUser();
             client.loadUserWithIDCompletion(userID, (user: TWTRUser, error) => {
                 if (error) {
-                    reject({ message: error.localizedDescription });
+                    reject({message: error.localizedDescription});
                 } else {
                     resolve({
                         formattedScreenName: user.formattedScreenName,
@@ -44,57 +46,57 @@ export class TNSTwitter {
             });
         });
     }
-    public static logIn(controller: any): Promise<any> {
-      return new Promise((resolve, reject) => {
-        TWTRTwitter.sharedInstance().logInWithViewControllerCompletion(controller, (session, error) => {
-          if (error) {
-            reject({ message: error.localizedDescription });
-          } else {
-            TNSTwitter.getCurrentUser(session.userID, session.authToken, session.authTokenSecret).then(user => {
-              resolve(user);
-            });
-          }
 
+    public static logIn(controller: any): Promise<any> {
+        return new Promise((resolve, reject) => {
+            TWTRTwitter.sharedInstance().logInWithViewControllerCompletion(controller, (session, error) => {
+                if (error) {
+                    reject({message: error.localizedDescription});
+                } else {
+                    TNSTwitter.getCurrentUser(session.userID, session.authToken, session.authTokenSecret).then(user => {
+                        resolve(user);
+                    }).catch(error => {
+                        reject(error)
+                    })
+                }
+
+            });
         });
-      });
     }
 }
 
 export class TNSTwitterButton extends View {
-    private _ios;
     get ios() {
-        return this._ios;
+        return this.nativeView;
     }
+
     public createNativeView() {
-        this._ios = TWTRLogInButton.buttonWithLogInCompletion((session, error) => {
+        return TWTRLogInButton.buttonWithLogInCompletion((session, error) => {
             if (error) {
                 this.notify({
                     eventName: 'loginStatus',
-                    object: fromObject({ value: 'failed' })
+                    object: fromObject({value: 'failed', message: error.localizedDescription})
                 });
             } else {
                 this.notify({
                     eventName: 'loginStatus',
-                    object: fromObject({ value: 'success', userName: session.userName, userID: session.userID })
+                    object: fromObject({value: 'success', userName: session.userName, userID: session.userID})
                 });
             }
         });
-        return this._ios;
-    }
-    public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number) {
-        const width = layout.getMeasureSpecSize(widthMeasureSpec);
-        const height = layout.getMeasureSpecSize(heightMeasureSpec);
-        this.setMeasuredDimension(width, height);
     }
 }
 
 export class CustomApiService {
     private _config;
     private _token;
+
     constructor() {
-        this._config = utils.ios.getter(TWTRTwitter, TWTRTwitter.sharedInstance).authConfig;
-        this._token = utils.ios.getter(TWTRTwitter, TWTRTwitter.sharedInstance).sessionStore.session();
+        const instance = TWTRTwitter.sharedInstance();
+        this._config = instance.authConfig;
+        this._token = instance.sessionStore.session();
     }
+
     makeRequest(url, method, options?): Promise<any> {
         return new Promise((resolve, reject) => {
             let nsError;
@@ -106,18 +108,18 @@ export class CustomApiService {
                         const json = NSJSONSerialization.JSONObjectWithDataOptionsError(data, 0);
                         resolve(this.toJsObject(json));
                     } else {
-                        reject({ message: error.localizedDescription })
+                        reject({message: error.localizedDescription})
                     }
                 });
             } else {
-                reject({ message: nsError.localizedDescription })
+                reject({message: nsError.localizedDescription})
             }
         });
     }
 
 
     toJsObject = function (objCObj) {
-        if (objCObj === null || typeof objCObj != "object") {
+        if (objCObj === null || typeof objCObj != 'object') {
             return objCObj;
         }
         var node, key, i, l,
